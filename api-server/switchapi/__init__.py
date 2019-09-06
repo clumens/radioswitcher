@@ -37,6 +37,35 @@ def create_app():
         # Return just the supported bands
         return jsonify({"bands": beaglebone.bands}), 200
 
+    @app.route("/power/off")
+    @basic_auth.required
+    def power_off():
+        try:
+            beaglebone._previouslyActive = beaglebone.activeBand
+            beaglebone.deactivateBand(beaglebone._previouslyActive)
+        except ValueError as e:
+            return jsonify({"power": "off", "result": "failure",
+                            "reason": str(e)}), 400
+        else:
+            return jsonify({"power": "off", "result": "success"}), 200
+
+    @app.route("/power/on")
+    @basic_auth.required
+    def power_on():
+        if beaglebone._previouslyActive is not None:
+            band = beaglebone._previouslyActive
+        else:
+            band = beaglebone.defaultBand
+
+        try:
+            beaglebone.activateBand(band)
+        except ValueError as e:
+            return jsonify({"power": "on", "result": "failure",
+                            "reason": str(e)}), 400
+        else:
+            return jsonify({"power": "on", "result": "success",
+                            "band": band}), 200
+
     @app.route("/switch/<band>")
     @basic_auth.required
     def switch(band):

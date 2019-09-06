@@ -4,6 +4,7 @@ class BB(object):
     def __init__(self, xverters=None):
         self._activeGpioPin = None
         self._initialized = False
+        self._previouslyActive = None
 
         # These are the pins on the BeagleBone which are hooked up to a pin on
         # the relay board.  It is assumed they are connected in the same order.
@@ -48,7 +49,7 @@ class BB(object):
         objs = filter(lambda obj: obj is not None, self._pins.values())
         return sorted([obj.band for obj in list(objs)])
 
-    def deactiveBand(self, band):
+    def deactivateBand(self, band):
         if not self._initialized:
             raise RuntimeError("Hardware is not initialized")
 
@@ -57,6 +58,14 @@ class BB(object):
             raise ValueError("Unsupported band: " + band)
 
         self._deactivatePin(pin)
+
+    @property
+    def defaultBand(self):
+        for name, obj in self._pins.items():
+            if obj and obj.isDefault:
+                return name
+
+        return self._pins.keys()[0].band
 
     def initHW(self):
         self.__relaysInit()
@@ -90,6 +99,7 @@ class BB(object):
     # Like _deactivatePin, but without any checking
     def __deactivatePin(self, name):
         GPIO.output(name, GPIO.HIGH)
+        self._activeGpioPin = None
 
     def _pinForBand(self, band):
         for pin, obj in self._pins.items():
