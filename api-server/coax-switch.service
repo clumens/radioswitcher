@@ -3,11 +3,11 @@ Description=Coax Switch API Service
 After=syslog.target network.target
 
 [Service]
-user=ham
-group=ham
-WorkingDirectory=/home/ham/coax-switch
+User=ham
+Group=ham
+WorkingDirectory=/home/ham/radioswitcher/api-server
 ExecStart=/usr/bin/uwsgi --http-socket :9090 --manage-script-name --mount /=switchapi:app --plugin python3
 Restart=on-failure
 
 [Install]
-WantedBy: multi-user.target
+WantedBy=multi-user.target
