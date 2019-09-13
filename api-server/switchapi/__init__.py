@@ -42,8 +42,9 @@ def create_app():
     @basic_auth.required
     def power_off():
         try:
-            beaglebone._previouslyActive = beaglebone.activeBand
-            beaglebone.deactivateBand(beaglebone._previouslyActive)
+            if beaglebone.activeBand:
+                beaglebone._previouslyActive = beaglebone.activeBand
+                beaglebone.deactivateBand(beaglebone._previouslyActive)
         except ValueError as e:
             return jsonify({"power": "off", "result": "failure",
                             "reason": str(e)}), 400
