@@ -11,10 +11,11 @@ def create_app():
 
     basic_auth = BasicAuth(app)
 
-    beaglebone = BB(xverters=[Transverter("SG Labs 33cm", "902"),
-                              Transverter("SG Labs 23cm", "1296", isDefault=True),
+    beaglebone = BB(xverters=[Transverter("SG Labs 33cm", "902", isDefault=True),
+                              Transverter("SG Labs 23cm", "1296"),
                               Transverter("SG Labs 13cm", "2304"),
-                              None, None, None, None, None])
+                              Transverter("SG Labs 9cm", "3456"),
+                              None, None, None, None])
     beaglebone.initHW()
 
     @app.route("/active")
