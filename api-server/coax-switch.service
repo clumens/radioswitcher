@@ -1,6 +1,6 @@
 [Unit]
 Description=Coax Switch API Service
-After=syslog.target network.target
+After=syslog.target network.target bb-wl18xx-wlan0.service
 
 [Service]
 User=ham
@@ -8,6 +8,8 @@ Group=ham
 WorkingDirectory=/home/ham/radioswitcher/api-server
 ExecStart=/usr/bin/uwsgi --http-socket :9090 --manage-script-name --mount /=switchapi:app --plugin python3
 Restart=on-failure
+StandardError=syslog
+NotifyAccess=all
 
 [Install]
 WantedBy=multi-user.target
